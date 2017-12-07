@@ -8,7 +8,6 @@ const { hash }= require('bcrypt');
 const passport = require('passport');
 
 const router = express.Router();
-const securedRouter = express.Router();
 
 router.post('/',[
   body('username').exists(),
@@ -31,27 +30,34 @@ router.post('/',[
   }
 });
 
-securedRouter.get('/favorites', async (req, res, next) => {
+router.post('/movies/favorites',[
+  body('user').exists(),
+], async (req, res, next) => {
+  const { user }      = matchedData(req);
+  debug(user, 'movies/fav..');
   try {
-    const movies = await User.getFavoriteMovies(req.user._id);
+    const movies = await User.getFavoriteMovies(user._id);
     res.json({ movies });
   } catch (e) {
     next(e);
   }
 });
 
-securedRouter.post('/favorites', [
+router.post('/favorites', [
   body('movieDBId').exists(),
+  body('user').exists(),
 ], async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(422).json({ errors: errors.mapped() });
   }
 
+  
+  const { user }      = matchedData(req)
   const { movieDBId } = matchedData(req);
 
   try {
-    await User.addFavoriteMovie(req.user, movieDBId);
+    await User.addFavoriteMovie(user, movieDBId);
     res.json({ message: 'ok' });
   } catch (e) {
     console.log(e);
@@ -59,6 +65,5 @@ securedRouter.post('/favorites', [
   }
 });
 
-router.use('/', passport.authenticate('jwt', { session: false }), securedRouter);
 
 module.exports = router;

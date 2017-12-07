@@ -28,7 +28,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use('/', index);
 app.use('/', authentication);
 app.use('/user', user);
-app.use('/movies', passport.authenticate('jwt', { session: false }), movies);
+app.use('/movies', movies);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

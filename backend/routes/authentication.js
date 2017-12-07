@@ -34,7 +34,9 @@ router.post('/login', [
     // from now on we'll identify the user by the id and the id is the only personalized value that goes into our token
     const payload = { id: user._id };
     const token = jwt.sign(payload, jwtOptions.secretOrKey);
-    return res.json({ message: 'ok', token: token });
+    const userDetail = (({ _id, username, favoriteMovies }) => ({ _id, username, favoriteMovies }))(user);
+
+    return res.json({ message: 'ok', token: token, userDetail });
   }
   return res.status(401).json({ message:'passwords did not match' });
 });

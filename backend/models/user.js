@@ -29,11 +29,13 @@ async function create({ username, password }) {
 }
 
 async function addFavoriteMovie(user, movieDBId) {
+  debug(`user`, user)
   const movie = await findMovieById(movieDBId);
+  const _user  =  await User.findOne({ _id: user._id });
   // if no movie found an not found exception will be throw
-  user.favoriteMovies.push(movie._id);
+  _user.favoriteMovies.push(movie._id);
   debug(`saving user ${user._id} with new movie ${movie.id}`);
-  return await user.save();
+  return await _user.save();
 }
 
 async function getFavoriteMovies(id) {

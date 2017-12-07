@@ -53,7 +53,6 @@ router.post('/search', [
   if (!errors.isEmpty()) {
     return next({ message: 'Invalid data', mapped: errors.mapped(), status: 422});
   }
-
   const { name } = matchedData(req);
   debug(`looking for movie with name '${name}'`);
   try {
